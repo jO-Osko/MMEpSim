@@ -85,23 +85,55 @@ class VaccinationStatus(ListableEnum):
     INEFFECTIVE_VACCINATION = 4
 
 
+# See: https://en.wikipedia.org/wiki/Incubation_period#/media/File:Concept_of_incubation_period.svg
+
+@unique
+class DiseaseStatus(ListableEnum):
+    """
+    Objekt, ki predstavlja stanje bolezni
+    Možni vrednosti:
+    INCUBATION_PERIOD: Inkubacijska doba: posameznik je okužen, a se simptomi še niso pokazali
+    DISEASE_PERIOD: Bolezen je razvita, simptomi so jasno vidni
+    """
+    INCUBATION_PERIOD = 0
+    DISEASE_PERIOD = 1
+
+
+@unique
+class InfectivityStatus(ListableEnum):
+    """
+    Objekt, ki predstavlja stanje nalezljivosti človeka
+    Možni vrednosti:
+    NOT_INFECTIVE: Posameznik je v latentnem obdobju, sicer okužen, a ne prenaša (še) bolezni
+    INFECTIVE: Posameznik lahko okuži druge
+    """
+    NOT_INFECTIVE = 0
+    INFECTIVE = 1
+
+
 class Person:
     """
     Objekt ’Person’ (oseba), ki vsebuje vse potrebne informacije o osebi
     """
 
     __slots__ = (
-        "age_group", "sex_type", "infection_status", "vaccination_status"
+        "age_group", "sex_type", "infection_status", "disease_duration", "disease_status", "infectivity_status",
+        "vaccination_status"
     )
 
-    def __init__(self, age_group: AgeGroup = AgeGroup.ADULT,
-                 sex_type: SexType = SexType.WOMAN,
+    def __init__(self, age_group: AgeGroup = AgeGroup.ADULT, sex_type: SexType = SexType.WOMAN,
                  infection_status: InfectionStatus = InfectionStatus.NOT_INFECTED,
+                 disease_duration: int = 0,
+                 disease_status: DiseaseStatus = DiseaseStatus.INCUBATION_PERIOD,
+                 infectivity_status: InfectivityStatus = InfectivityStatus.NOT_INFECTIVE,
                  vaccination_status: VaccinationStatus = VaccinationStatus.NOT_VACCINATED) \
             -> None:
         self.age_group = age_group
         self.sex_type = sex_type
         self.infection_status = infection_status
+        self.disease_duration = disease_duration
+        self.disease_status = disease_status
+        self.infectivity_status = infectivity_status
         self.vaccination_status = vaccination_status
 
 
