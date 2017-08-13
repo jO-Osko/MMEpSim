@@ -130,13 +130,13 @@ class Person:
     """
 
     __slots__ = (
-        "age_group", "sex_type", "infection_status", "disease_duration", "disease_status", "infectivity_status",
+        "age_group", "sex_type", "infection_status", "infection_duration", "disease_status", "infectivity_status",
         "vaccination_status"
     )
 
     def __init__(self, age_group: AgeGroup = AgeGroup.ADULT, sex_type: SexType = SexType.WOMAN,
                  infection_status: InfectionStatus = InfectionStatus.NOT_INFECTED,
-                 disease_duration: int = 0,
+                 infection_duration: int = 0,
                  disease_status: DiseaseStatus = DiseaseStatus.INCUBATION_PERIOD,
                  infectivity_status: InfectivityStatus = InfectivityStatus.NOT_INFECTIVE,
                  vaccination_status: VaccinationStatus = VaccinationStatus.NOT_VACCINATED) \
@@ -144,7 +144,7 @@ class Person:
         self.age_group = age_group
         self.sex_type = sex_type
         self.infection_status = infection_status
-        self.disease_duration = disease_duration
+        self.infection_duration = infection_duration
         self.disease_status = disease_status
         self.infectivity_status = infectivity_status
         self.vaccination_status = vaccination_status
