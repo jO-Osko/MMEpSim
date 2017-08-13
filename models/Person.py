@@ -3,6 +3,9 @@
 from enum import Enum, unique
 from typing import List, Any, TypeVar, Type
 
+from models.Country import Country
+from models.random import select, random_weighted_select
+
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.fili@gmail.com"
 
@@ -15,7 +18,7 @@ T = TypeVar("T", bound="ListableEnum")
 
 class ListableEnum(Enum):
     @classmethod
-    def items(cls: Type[T]) -> List[T]:
+    def items_g(cls: Type[T]) -> List[T]:
         cls_ = cls  # type: Any
         return list(cls_)
 
@@ -29,6 +32,9 @@ class AgeGroup(ListableEnum):
     CHILD = 0, 14
     ADULT = 15, 64
     OLD = 65, 100
+
+
+AGE_GROUPS = AgeGroup.items_g()
 
 
 @unique
@@ -45,6 +51,9 @@ class SexType(ListableEnum):
     """
     WOMAN = 0
     MAN = 1
+
+
+SEX_TYPES = SexType.items_g()
 
 
 @unique
@@ -83,6 +92,9 @@ class VaccinationStatus(ListableEnum):
     FRESHLY_VACCINATED = 2
     STALE_VACCINATION = 3
     INEFFECTIVE_VACCINATION = 4
+
+
+VACCINATION_TYPES = VaccinationStatus.items_g()
 
 
 # See: https://en.wikipedia.org/wiki/Incubation_period#/media/File:Concept_of_incubation_period.svg
@@ -135,6 +147,20 @@ class Person:
         self.disease_status = disease_status
         self.infectivity_status = infectivity_status
         self.vaccination_status = vaccination_status
+
+    @classmethod
+    def from_country_data(cls, country: Country) -> "Person":
+        """
+        Naredi naklučno osebo
+        :param country: podatki o državi
+        :return: Naključna nova oseba
+        """
+        select = random_weighted_select
+        age_group = select(AGE_GROUPS, country.age_distribution)
+        sex_type = select(SEX_TYPES, country.sex_distribution)
+        vaccination_status = select(VACCINATION_TYPES, country.vaccine_distribution)
+
+        return cls(age_group, sex_type, vaccination_status=vaccination_status)
 
 
 def main() -> bool:
