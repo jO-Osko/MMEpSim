@@ -65,13 +65,14 @@ class InfectionStatus(ListableEnum):
     CURRENTLY_INFECTED: Posameznik je trenutno okužen
     PREVIOUSLY_INFECTED: Posameznik trenutno ni okužen, vendar je bil okužen
     v preteklosti
-
+    DEAD: Mrtev
     Delitev na tri in ne zgolje dve različni stanji je pomembna zaradi možnosti
     ponovnih okužb, ali odpornosti na ponovno okužbo.
     """
     NOT_INFECTED = 0
     CURRENTLY_INFECTED = 1
     PREVIOUSLY_INFECTED = 2
+    DEAD = 3
 
 
 @unique
