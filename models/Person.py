@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from enum import Enum, unique
+from typing import List, Any, TypeVar, Type
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.fili@gmail.com"
@@ -9,21 +10,29 @@ __email__ = "koprivec.fili@gmail.com"
 Objekt ’Person’, ki predstavlja indiviualno osebo in z njo povezane funkcije 
 ter pomožni objekti
 """
+T = TypeVar("T", bound="ListableEnum")
+
+
+class ListableEnum(Enum):
+    @classmethod
+    def items(cls: Type[T]) -> List[T]:
+        cls_ = cls  # type: Any
+        return list(cls_)
 
 
 @unique
-class AgeGroup(Enum):
+class AgeGroup(ListableEnum):
     """
     Objekt ki predstavlja starostno skupino osebka. Vrednosti oznake
     predstavljajo približne starostne meje in so odprte za dopolnjevanje.
     """
-    CHILD = 0, 18
-    ADULT = 19, 65
-    OLD = 66, 100
+    CHILD = 0, 14
+    ADULT = 15, 64
+    OLD = 65, 100
 
 
 @unique
-class SexType(Enum):
+class SexType(ListableEnum):
     """
     Objekt SexType, ki predstavlja spol osebe. Za potrebe politične
     (ne)korektnosti predstavlja biološki spol, je fiksen in je striktno binaren.
@@ -39,7 +48,7 @@ class SexType(Enum):
 
 
 @unique
-class InfectionStatus(Enum):
+class InfectionStatus(ListableEnum):
     """
     Objekt, ki predstavlja trenutno stanje infekcije posameznika. Posameznik je
     lahko:
@@ -57,7 +66,7 @@ class InfectionStatus(Enum):
 
 
 @unique
-class VaccinationStatus(Enum):
+class VaccinationStatus(ListableEnum):
     """
     Objekt, ki predstavlja trenutno stanje cepljenosti posameznika.
     Posameznik je lahko:
@@ -67,12 +76,13 @@ class VaccinationStatus(Enum):
     na uspešnost cepiva
     STALE_VACCINATION: Posameznik je bil cepljen dolgo nazaj, cepivo je lahko
     izgubilo moč/zaščito, ali pa je bil cepljen za drugačen sev bolezni.
-
+    INEFFECTIVE_VACCINATION: Cepivo ni učinkovito
     """
     NOT_VACCINATED = 0
     FULLY_VACCINATED = 1
     FRESHLY_VACCINATED = 2
     STALE_VACCINATION = 3
+    INEFFECTIVE_VACCINATION = 4
 
 
 class Person:
