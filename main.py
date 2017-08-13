@@ -12,6 +12,8 @@ from models.Disease import Measles
 
 import matplotlib
 
+from models.Person import InfectionStatus
+
 matplotlib.use('TkAgg')  # do this before importing pylab
 import time
 import matplotlib.pyplot as plt
@@ -32,13 +34,19 @@ def main() -> bool:
     print(time.time() - t)
 
     fig = plt.figure()
-    ax = fig.add_subplot(111)
+
+    board.board[board.width // 2][board.height // 2].infection_status = InfectionStatus.CURRENTLY_INFECTED
+    step = 0
 
     def animate():
+        nonlocal step
+        step += 1
+        print("Step:", step)
         t = time.time()
         plt.clf()
         tmp = plt.imshow(board.to_np_image_array(), interpolation='nearest', cmap="jet")
         del tmp
+        board.next_step()
         fig.canvas.draw()
         print(time.time() - t)
         time.sleep(0.1)
