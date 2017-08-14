@@ -23,7 +23,7 @@ def random_weighted_select(items: items_t, p: List[float], rand_fun: Callable[[]
     cum_s = 0.0
     for ind, item in enumerate(items):
         cum_s += p[ind]
-        if cum_s <= r:
+        if cum_s > r:
             return item
     return items[-1]
 
