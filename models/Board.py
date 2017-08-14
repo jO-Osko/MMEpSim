@@ -12,7 +12,7 @@ from typing import Tuple, List, Any, Optional
 
 from models.Country import Country
 from models.Disease import Disease
-from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseStatus
+from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseStatus, VaccinationStatus
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.filip+template@gmail.com"
@@ -66,9 +66,11 @@ class Board:
         # Think about reinfection
         i = i % self.height
         j = j % self.width
-        if self.board[i][j].infection_status == InfectionStatus.NOT_INFECTED:
+        person = self.board[i][j]
+        if person.infection_status == InfectionStatus.NOT_INFECTED:
             do_infect = random() < self.disease.disease_info.infection_chance
-            if do_infect:
+            vaccine_effect = random() < person.vaccination_status.value
+            if do_infect and vaccine_effect:
                 infected = self.board[i][j].__copy__()
                 infected.infection_status = InfectionStatus.CURRENTLY_INFECTED
                 return infected
