@@ -64,4 +64,4 @@ class DiseaseInfo:
 
 
 # Podatki: https://en.wikipedia.org/wiki/Measles
-Measles = Disease("Measles, Ošpice", DiseaseInfo(11, 8, 11 - 4, 11 + 4, 0.2, 0.7, 30))
+Measles = Disease("Measles, Ošpice", DiseaseInfo(11, 8, 11 - 4, 8, 0.2, 0.7, 30))
