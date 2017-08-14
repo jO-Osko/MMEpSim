@@ -106,10 +106,10 @@ class DiseaseStatus(ListableEnum):
     Objekt, ki predstavlja stanje bolezni
     Možni vrednosti:
     INCUBATION_PERIOD: Inkubacijska doba: posameznik je okužen, a se simptomi še niso pokazali
-    DISEASE_PERIOD: Bolezen je razvita, simptomi so jasno vidni
+    SYMPTOMATIC_PERIOD: Bolezen je razvita, simptomi so jasno vidni
     """
     INCUBATION_PERIOD = 0
-    DISEASE_PERIOD = 1
+    SYMPTOMATIC_PERIOD = 1
 
 
 @unique
