@@ -75,7 +75,6 @@ class InfectionStatus(ListableEnum):
     DEAD = 3
 
 
-@unique
 class VaccinationStatus(ListableEnum):
     """
     Objekt, ki predstavlja trenutno stanje cepljenosti posameznika.
@@ -88,11 +87,11 @@ class VaccinationStatus(ListableEnum):
     izgubilo moč/zaščito, ali pa je bil cepljen za drugačen sev bolezni.
     INEFFECTIVE_VACCINATION: Cepivo ni učinkovito
     """
-    NOT_VACCINATED = 0
-    FULLY_VACCINATED = 1
-    FRESHLY_VACCINATED = 2
-    STALE_VACCINATION = 3
-    INEFFECTIVE_VACCINATION = 4
+    NOT_VACCINATED = 1
+    FULLY_VACCINATED = 0
+    FRESHLY_VACCINATED = 0.01
+    STALE_VACCINATION = 0.02
+    INEFFECTIVE_VACCINATION = 1
 
 
 VACCINATION_TYPES = VaccinationStatus.items_g()
