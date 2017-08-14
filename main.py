@@ -34,8 +34,12 @@ def main() -> bool:
     print(time.time() - t)
 
     fig = plt.figure()
-
+    print(board.height ** 2)
     board.board[board.width // 2][board.height // 2].infection_status = InfectionStatus.CURRENTLY_INFECTED
+    tmp = plt.imshow(board.to_np_image_array(), interpolation='nearest', cmap="jet")
+    del tmp
+    fig.canvas.draw()
+
     step = 0
 
     def animate():
@@ -43,10 +47,12 @@ def main() -> bool:
         step += 1
         print("Step:", step)
         t = time.time()
+        print("\n".join(
+            map(str, board.simulate_steps(10)))
+        )
         plt.clf()
         tmp = plt.imshow(board.to_np_image_array(), interpolation='nearest', cmap="jet")
         del tmp
-        board.next_step()
         fig.canvas.draw()
         print(time.time() - t)
         time.sleep(0.1)

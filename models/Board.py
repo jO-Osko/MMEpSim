@@ -12,7 +12,7 @@ from typing import Tuple, List, Any, Optional
 
 from models.Country import Country
 from models.Disease import Disease
-from models.Person import Person, InfectionStatus
+from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseStatus
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.filip+template@gmail.com"
@@ -22,7 +22,10 @@ class Board:
     """
     
     """
-    __slots__ = ("country", "disease", "width", "height", "board", "board_config")
+    __slots__ = (
+        "country", "disease", "width", "height", "board", "board_config", "infected_num", "dead_num", "alive_num",
+        "infectious_num", "symptomatic_num",
+    )
 
     def __init__(self, country: Country, disease: Disease, board_config: "BoardConfig") -> None:
         self.country = country
@@ -30,6 +33,11 @@ class Board:
         self.board_config = board_config
         self.width, self.height = Board.calculate_dimensions(self.country, self.board_config.cell_ratio)
         self.board = []  # type: List[List[Person]]
+
+        self.infected_num = 0
+        self.infectious_num = 0
+        self.symptomatic_num = 0
+        self.dead_num = 0
 
     def init_board(self) -> None:
         """
@@ -44,7 +52,8 @@ class Board:
         :return: Polje barv
         """
         return numpy.array(
-            [[self.board_config.get_color(person) for person in line] for line in self.board], dtype="float32")
+            [[self.board_config.get_color(person) for person in line] for line in self.board], dtype="float32"
+        )
 
     def infect_target(self, i, j, distance) -> Optional[Person]:
         """
@@ -65,75 +74,117 @@ class Board:
                 return infected
         return None
 
-    def next_step(self) -> None:
+    def next_step(self) -> Tuple[int, int, int, int]:
         """
-        Simulira en korak/dan v modelu
-        :return: None
+        Simulira en korak/dan v modelu, vrne spremembe ki so se zgodile, negativne vrednosti predstavljajo manj ljudi
+        :return: (število na novo okuženih; število na novo kužnih; število novih ljudi, ki kažejo simptome; 
+                število na novo umrlih)
         """
         # Promote to deque if necessary
-        changes = []  # type: List[Tuple[int, int, Person]]
+        newly_infected = []  # type: List[Tuple[int, int, Person]]
+
+        newly_dead_num = 0
+        newly_infected_num = 0
+        newly_infectious_num = 0
+        newly_symptomatic_num = 0
 
         distance = int(ceil(self.disease.disease_info.infectious_distance / self.board_config.cell_ratio) + 1)
 
         latent = self.disease.disease_info.latent_period
-        infectious = self.disease.disease_info.infectious_period
+        infectious_end = latent + self.disease.disease_info.infectious_period
         incubation = self.disease.disease_info.incubation_period
-        max_duration = self.disease.disease_info.sickness_period + self.disease.disease_info.incubation_period
+        max_duration = incubation + self.disease.disease_info.sickness_period
         mortality_chance = self.disease.disease_info.mortality_chance
+
         for line_i, line in enumerate(self.board):
             for col_i, person in enumerate(line):
                 # Only infected people interest us
                 if person.infection_status != InfectionStatus.CURRENTLY_INFECTED:
                     continue
+                # Update status
+                duration = person.infection_duration
+
+                # Infectious
+                if duration == latent:
+                    person.infectivity_status = InfectivityStatus.INFECTIVE
+                    newly_infectious_num += 1
+                elif duration == infectious_end:
+                    newly_infectious_num -= 1
+                    person.infectivity_status = InfectivityStatus.NOT_INFECTIVE
+
+                if duration == incubation:
+                    person.disease_status = DiseaseStatus.SYMPTOMATIC_PERIOD
+                    newly_symptomatic_num += 1
+                elif duration == max_duration:
+                    person.infection_status = InfectionStatus.PREVIOUSLY_INFECTED
+                    person.disease_status = DiseaseStatus.INCUBATION_PERIOD
+                    newly_symptomatic_num -= 1
+
+                # Die
+                if person.disease_status is DiseaseStatus.SYMPTOMATIC_PERIOD and random() < mortality_chance:
+                    person.infection_status = InfectionStatus.DEAD
+                    newly_dead_num += 1
+                    newly_infected_num -= 1
+                    if person.infectivity_status is InfectivityStatus.INFECTIVE:
+                        newly_infectious_num -= 1
+
+                person.infection_duration += 1
+
                 # Infect others
-                if latent <= person.infection_duration <= infectious:
+
+                if person.infectivity_status is InfectivityStatus.INFECTIVE:
                     # Do infections
-                    for dst in range(1, distance+1):
+                    for dst in range(1, distance + 1):
                         # Handle corner cases by hand
                         # Top
                         dy = -dst
                         temp = self.infect_target(line_i + dy, col_i, dst)
                         if temp is not None:
-                            #if line_i + dy > 0:
+                            # if line_i + dy > 0:
                             #    self.board[line_i + dy][col_i] = temp
-                            #else:
-                                changes.append((line_i + dy, col_i, temp))
+                            # else:
+                            newly_infected.append((line_i + dy, col_i, temp))
 
                         # Bottom
                         dy = dst
                         temp = self.infect_target(line_i + dy, col_i, dst)
                         if temp is not None:
-                            changes.append((line_i + dy, col_i, temp))
+                            newly_infected.append((line_i + dy, col_i, temp))
 
                         for dy in range(-dst + 1, dst):
                             # Right
                             dx = abs(dst - abs(dy))
                             temp_right = self.infect_target(line_i + dy, col_i + dx, dst)
                             if temp_right is not None:
-                                #if dy < 0 and line_i + dy > 0:
+                                # if dy < 0 and line_i + dy > 0:
                                 #    self.board[line_i + dy][(col_i + dx) % self.width] = temp_right
-                                #else:
-                                    changes.append((line_i + dy, col_i + dx, temp_right))
+                                # else:
+                                newly_infected.append((line_i + dy, col_i + dx, temp_right))
 
                             # Left
                             dx = -dx
                             temp_left = self.infect_target(line_i + dy, col_i + dx, dst)
                             if temp_left is not None:
-                                #if dy < 0 and line_i + dy > 0:
+                                # if dy < 0 and line_i + dy > 0:
                                 #    self.board[line_i + dy][(col_i + dx) % self.width] = temp_left
-                                #else:
-                                    changes.append((line_i + dy, col_i + dx, temp_left))
-                # Die
-                if person.infection_duration > incubation and random() < mortality_chance:
-                    person.infection_status = InfectionStatus.DEAD
-                    continue
-                # Update info
-                person.infection_duration += 1
-                if person.infection_duration > max_duration:
-                    person.infection_status = InfectionStatus.PREVIOUSLY_INFECTED
-        print("Changes:", len(changes))
-        for i, j, person in changes:
+                                # else:
+                                newly_infected.append((line_i + dy, col_i + dx, temp_left))
+                                # Update info
+
+        newly_infected_num += len(newly_infected)
+
+        self.infected_num += newly_infected_num
+        self.dead_num += newly_dead_num
+        self.infectious_num += newly_infectious_num
+        self.symptomatic_num += newly_symptomatic_num
+
+        for i, j, person in newly_infected:
             self.board[i % self.height][j % self.width] = person
+
+        return newly_infected_num, newly_infectious_num, newly_symptomatic_num, newly_dead_num
+
+    def simulate_steps(self, steps: int = 1) -> List[Tuple[int, int, int, int]]:
+        return [self.next_step() for _ in range(steps)]
 
     @classmethod
     def create_board(cls, country: Country, disease: Disease, board_config: "BoardConfig") -> "Board":
