@@ -88,15 +88,15 @@ class Board:
                 # Infect others
                 if latent <= person.infection_duration <= infectious:
                     # Do infections
-                    for dst in range(1, distance):
+                    for dst in range(1, distance+1):
                         # Handle corner cases by hand
                         # Top
                         dy = -dst
                         temp = self.infect_target(line_i + dy, col_i, dst)
                         if temp is not None:
-                            if line_i + dy > 0:
-                                self.board[line_i + dy][col_i] = temp
-                            else:
+                            #if line_i + dy > 0:
+                            #    self.board[line_i + dy][col_i] = temp
+                            #else:
                                 changes.append((line_i + dy, col_i, temp))
 
                         # Bottom
@@ -107,21 +107,21 @@ class Board:
 
                         for dy in range(-dst + 1, dst):
                             # Right
-                            dx = abs(dst - dy)
+                            dx = abs(dst - abs(dy))
                             temp_right = self.infect_target(line_i + dy, col_i + dx, dst)
                             if temp_right is not None:
-                                if dy < 0 and line_i + dy > 0:
-                                    self.board[line_i + dy][(col_i + dx) % self.width] = temp_right
-                                else:
+                                #if dy < 0 and line_i + dy > 0:
+                                #    self.board[line_i + dy][(col_i + dx) % self.width] = temp_right
+                                #else:
                                     changes.append((line_i + dy, col_i + dx, temp_right))
 
                             # Left
                             dx = -dx
                             temp_left = self.infect_target(line_i + dy, col_i + dx, dst)
                             if temp_left is not None:
-                                if dy < 0 and line_i + dy > 0:
-                                    self.board[line_i + dy][(col_i + dx) % self.width] = temp_left
-                                else:
+                                #if dy < 0 and line_i + dy > 0:
+                                #    self.board[line_i + dy][(col_i + dx) % self.width] = temp_left
+                                #else:
                                     changes.append((line_i + dy, col_i + dx, temp_left))
                 # Die
                 if person.infection_duration > incubation and random() < mortality_chance:
