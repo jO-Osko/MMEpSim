@@ -17,6 +17,34 @@ from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseSta
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.filip+template@gmail.com"
 
+"""Simple PrintableStructure interface"""
+from typing import Iterable
+
+
+class PrintableStructure:
+    # Object methods
+    __printable_fields__ = ()  # type: Iterable[str]
+    __printable_name__ = "PrintableStructure"
+    _formatter = "{name}({data})"
+
+    __slots__ = ()  # type: Iterable[str]
+
+    def _str_fields(self) -> str:
+        return ", ".join(map(lambda x: repr(self.__getattribute__(x)), self.__printable_fields__))
+
+    def _str_pairs(self) -> str:
+        return ", ".join(map(lambda x: x + "=" + repr(self.__getattribute__(x)), self.__printable_fields__))
+
+    def pp(self) -> str:
+        return self._formatter.format(name=self.__printable_name__, data=self._str_pairs())
+
+    def __repr__(self) -> str:
+        return self._formatter.format(name=self.__printable_name__, data=self._str_fields())
+
+    # For convenience
+    def __str__(self) -> str:
+        return self.__repr__()
+
 
 class Board:
     """
@@ -24,7 +52,7 @@ class Board:
     """
     __slots__ = (
         "country", "disease", "width", "height", "board", "board_config", "infected_num", "dead_num", "alive_num",
-        "infectious_num", "symptomatic_num", "touched_num"
+        "infectious_num", "symptomatic_num", "touched_num", "step_num"
     )
 
     def __init__(self, country: Country, disease: Disease, board_config: "BoardConfig") -> None:
@@ -39,6 +67,8 @@ class Board:
         self.symptomatic_num = 0
         self.dead_num = 0
         self.touched_num = 0
+
+        self.step_num = 0
 
     def init_board(self) -> None:
         """
@@ -80,12 +110,15 @@ class Board:
                 return infected
         return None
 
-    def next_step(self) -> Tuple[int, int, int, int, int]:
+    def next_step(self) -> "SimulationStepData":
         """
         Simulira en korak/dan v modelu, vrne spremembe ki so se zgodile, negativne vrednosti predstavljajo manj ljudi
         :return: (število na novo okuženih; število na novo kužnih; število novih ljudi, ki kažejo simptome; 
                 število na novo umrlih)
         """
+
+        self.step_num += 1
+
         # Promote to deque if necessary
         newly_infected = []  # type: List[Tuple[int, int, Person]]
 
@@ -188,9 +221,11 @@ class Board:
         for i, j, person in newly_infected:
             self.board[i % self.height][j % self.width] = person
 
-        return newly_infected_num, newly_infectious_num, newly_symptomatic_num, newly_dead_num, self.touched_num - touched
+        return SimulationStepData(self.step_num, self.infected_num, newly_infected_num, self.infectious_num,
+                                  newly_infectious_num, self.symptomatic_num, newly_symptomatic_num, self.dead_num,
+                                  newly_dead_num, self.touched_num, self.touched_num - touched)
 
-    def simulate_steps(self, steps: int = 1) -> List[Tuple[int, int, int, int, int]]:
+    def simulate_steps(self, steps: int = 1) -> List["SimulationStepData"]:
         """
         Simulira več korakov
         :param steps: število korakov
@@ -246,3 +281,30 @@ class BoardConfig:
         if person.infection_status == InfectionStatus.CURRENTLY_INFECTED:
             return self.infected
         return self.healthy
+
+
+class SimulationStepData(PrintableStructure):
+    __slots__ = (
+        "step_num", "infected", "newly_infected", "infectious", "newly_infectious", "symptomatic", "newly_symptomatic",
+        "dead", "newly_dead", "touched", "newly_touched"
+    )
+
+    __printable_name__ = "SimulationStepData"
+    _formatter = "{name}({data})"
+
+    __printable_fields__ = __slots__
+
+    def __init__(self, step_num: int, infected: int, newly_infected: int, infectious: int, newly_infectious: int,
+                 symptomatic: int, newly_symptomatic: int, dead: int, newly_dead: int, touched: int,
+                 newly_touched: int) -> None:
+        self.step_num = step_num
+        self.infected = infected
+        self.newly_infected = newly_infected
+        self.infectious = infectious
+        self.newly_infectious = newly_infectious
+        self.symptomatic = symptomatic
+        self.newly_symptomatic = newly_symptomatic
+        self.dead = dead
+        self.newly_dead = newly_dead
+        self.touched = touched
+        self.newly_touched = newly_touched
