@@ -77,6 +77,13 @@ class Board:
         """
         self.board = [[Person.from_country_data(self.country) for _ in range(self.width)] for _ in range(self.height)]
 
+    def manually_infect(self, coordinates: Iterable[Tuple[int, int]]) -> None:
+        for i, j in coordinates:
+            person = self.board[i][j]
+            if person.infection_status != InfectionStatus.CURRENTLY_INFECTED:
+                person.infection_status = InfectionStatus.CURRENTLY_INFECTED
+                self.infected_num += 1
+
     def to_np_image_array(self) -> Any:
         """
         Pretvori mrežo v polje barv
