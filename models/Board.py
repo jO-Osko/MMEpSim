@@ -159,6 +159,8 @@ class Board:
                     person.infection_status = InfectionStatus.PREVIOUSLY_INFECTED
                     person.disease_status = DiseaseStatus.INCUBATION_PERIOD
                     newly_symptomatic_num -= 1
+                    # For now
+                    newly_infected_num -= 1
 
                 # Die
                 if person.disease_status is DiseaseStatus.SYMPTOMATIC_PERIOD and random() < mortality_chance:
