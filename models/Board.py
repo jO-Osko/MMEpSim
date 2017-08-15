@@ -70,6 +70,10 @@ class Board:
 
         self.step_num = 0
 
+    @property
+    def stopped(self) -> bool:
+        return self.infected_num == 0
+
     def init_board(self) -> None:
         """
         Inicializira mrežo
@@ -125,6 +129,9 @@ class Board:
         """
 
         self.step_num += 1
+
+        if self.stopped:
+            return SimulationStepData.create_empty()
 
         # Promote to deque if necessary
         newly_infected = []  # type: List[Tuple[int, int, Person]]
@@ -220,15 +227,19 @@ class Board:
                                 newly_infected.append((line_i + dy, col_i + dx, temp_left))
                                 # Update info
 
+        for i, j, person in newly_infected:
+            if self.board[i % self.height][j % self.width].infection_status != InfectionStatus.CURRENTLY_INFECTED:
+                self.board[i % self.height][j % self.width] = person
+            else:
+                # Double infection
+                newly_infected_num -= 1
+
         newly_infected_num += len(newly_infected)
 
         self.infected_num += newly_infected_num
         self.dead_num += newly_dead_num
         self.infectious_num += newly_infectious_num
         self.symptomatic_num += newly_symptomatic_num
-
-        for i, j, person in newly_infected:
-            self.board[i % self.height][j % self.width] = person
 
         return SimulationStepData(self.step_num, self.infected_num, newly_infected_num, self.infectious_num,
                                   newly_infectious_num, self.symptomatic_num, newly_symptomatic_num, self.dead_num,
@@ -317,3 +328,16 @@ class SimulationStepData(PrintableStructure):
         self.newly_dead = newly_dead
         self.touched = touched
         self.newly_touched = newly_touched
+
+    @property
+    def empty(self) -> bool:
+        return self.step_num == -1
+
+    @classmethod
+    def create_empty(cls) -> "SimulationStepData":
+        """
+        Naredi 'prazen' rezultat (ko se je simulacija že končala)
+        :return: Prazen rezultat
+        """
+        # Ne da se mi pisat -1 dovoljkrat
+        return cls(*([-1] * len(cls.__slots__)))
