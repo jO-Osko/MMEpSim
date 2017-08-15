@@ -186,6 +186,11 @@ class Board:
         return newly_infected_num, newly_infectious_num, newly_symptomatic_num, newly_dead_num
 
     def simulate_steps(self, steps: int = 1) -> List[Tuple[int, int, int, int]]:
+        """
+        Simulira več korakov
+        :param steps: število korakov
+        :return: Tabelo rezultatov posameznega koraka
+        """
         return [self.next_step() for _ in range(steps)]
 
     @classmethod
