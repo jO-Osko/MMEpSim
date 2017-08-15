@@ -130,7 +130,7 @@ class Person:
 
     __slots__ = (
         "age_group", "sex_type", "infection_status", "infection_duration", "disease_status", "infectivity_status",
-        "vaccination_status"
+        "vaccination_status", "touched"
     )
 
     def __init__(self, age_group: AgeGroup = AgeGroup.ADULT, sex_type: SexType = SexType.WOMAN,
@@ -138,7 +138,8 @@ class Person:
                  infection_duration: int = 0,
                  disease_status: DiseaseStatus = DiseaseStatus.INCUBATION_PERIOD,
                  infectivity_status: InfectivityStatus = InfectivityStatus.NOT_INFECTIVE,
-                 vaccination_status: VaccinationStatus = VaccinationStatus.NOT_VACCINATED) \
+                 vaccination_status: VaccinationStatus = VaccinationStatus.NOT_VACCINATED,
+                 touched: bool=False) \
             -> None:
         self.age_group = age_group
         self.sex_type = sex_type
@@ -147,6 +148,7 @@ class Person:
         self.disease_status = disease_status
         self.infectivity_status = infectivity_status
         self.vaccination_status = vaccination_status
+        self.touched = touched
 
     @classmethod
     def from_country_data(cls, country: Country) -> "Person":

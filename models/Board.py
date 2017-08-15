@@ -24,7 +24,7 @@ class Board:
     """
     __slots__ = (
         "country", "disease", "width", "height", "board", "board_config", "infected_num", "dead_num", "alive_num",
-        "infectious_num", "symptomatic_num",
+        "infectious_num", "symptomatic_num", "touched_num"
     )
 
     def __init__(self, country: Country, disease: Disease, board_config: "BoardConfig") -> None:
@@ -38,6 +38,7 @@ class Board:
         self.infectious_num = 0
         self.symptomatic_num = 0
         self.dead_num = 0
+        self.touched_num = 0
 
     def init_board(self) -> None:
         """
@@ -67,6 +68,9 @@ class Board:
         i = i % self.height
         j = j % self.width
         person = self.board[i][j]
+        if not person.touched:
+            self.touched_num += 1
+            person.touched = True
         if person.infection_status == InfectionStatus.NOT_INFECTED:
             do_infect = random() < self.disease.disease_info.infection_chance
             vaccine_effect = random() < person.vaccination_status.value
@@ -76,7 +80,7 @@ class Board:
                 return infected
         return None
 
-    def next_step(self) -> Tuple[int, int, int, int]:
+    def next_step(self) -> Tuple[int, int, int, int, int]:
         """
         Simulira en korak/dan v modelu, vrne spremembe ki so se zgodile, negativne vrednosti predstavljajo manj ljudi
         :return: (število na novo okuženih; število na novo kužnih; število novih ljudi, ki kažejo simptome; 
@@ -89,6 +93,7 @@ class Board:
         newly_infected_num = 0
         newly_infectious_num = 0
         newly_symptomatic_num = 0
+        touched = self.touched_num
 
         distance = int(ceil(self.disease.disease_info.infectious_distance / self.board_config.cell_ratio) + 1)
 
@@ -183,9 +188,9 @@ class Board:
         for i, j, person in newly_infected:
             self.board[i % self.height][j % self.width] = person
 
-        return newly_infected_num, newly_infectious_num, newly_symptomatic_num, newly_dead_num
+        return newly_infected_num, newly_infectious_num, newly_symptomatic_num, newly_dead_num, self.touched_num - touched
 
-    def simulate_steps(self, steps: int = 1) -> List[Tuple[int, int, int, int]]:
+    def simulate_steps(self, steps: int = 1) -> List[Tuple[int, int, int, int, int]]:
         """
         Simulira več korakov
         :param steps: število korakov
