@@ -64,4 +64,6 @@ class DiseaseInfo:
 
 
 # Podatki: https://en.wikipedia.org/wiki/Measles
-Measles = Disease("Measles, Ošpice", DiseaseInfo(11, 8, 11 - 4, 8, 0.2, 0.7, 30))
+Measles = Disease("Measles, Ošpice", DiseaseInfo(11, 8, 11 - 4, 8, 1/400, 0.7, 30))
+# Ob zadnjem izbruhu ošpic v Sloveniji je zbolelo 398 ljudi, za enega je bila bolezen usodna
+# https://www.dnevnik.si/1042462427/slovenija/1042462427

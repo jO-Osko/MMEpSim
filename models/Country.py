@@ -27,4 +27,10 @@ class Country:
         self.vaccine_distribution = vaccine_distribution
 
 
-Slovenia = Country(1_978_029, [0.51, 0.49], [0.1335, 0.677, 0.1895], [0.1, 0.70, 0.05, 0.1, 0.05])
+cepljeno = 0.923
+
+Slovenia = Country(1_978_029, [0.51, 0.49], [0.1335, 0.677, 0.1895],
+                   [(1 - cepljeno), cepljeno * 0.90, cepljeno * 0.01, cepljeno * 0.04, cepljeno * 0.05])
+
+# https://podatki.nijz.si/pxweb/sl/NIJZ%20podatkovni%20portal/NIJZ%20podatkovni%20portal__5%20Preventivni%20programi__5a%20Precepljenost%20prebivalstva/CEPI2.px/table/tableViewLayout1/?rxid=cb52104b-25cc-4376-af74-4ed313f29e7d
+# https://podatki.nijz.si/pxweb/sl/NIJZ%20podatkovni%20portal/NIJZ%20podatkovni%20portal__5%20Preventivni%20programi__5a%20Precepljenost%20prebivalstva/CEPI1.px/table/tableViewLayout2/?rxid=cb52104b-25cc-4376-af74-4ed313f29e7d
