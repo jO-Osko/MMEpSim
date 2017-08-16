@@ -97,6 +97,15 @@ class Board:
             [[self.board_config.get_color(person) for person in line] for line in self.board], dtype="float32"
         )
 
+    def to_final_np_image_array(self) -> Any:
+        """
+        Pretvori mrežo v polje barv
+        :return: Polje barv
+        """
+        return numpy.array(
+            [[self.board_config.get_final_color(person) for person in line] for line in self.board], dtype="float32"
+        )
+
     def infect_target(self, i, j, distance) -> Optional[Person]:
         """
         Modelira okužbno novega posameznika
@@ -281,7 +290,9 @@ class Board:
 
 
 class BoardConfig:
-    __slots__ = ("cell_ratio", "dead", "healthy", "infected")
+    __slots__ = (
+        "cell_ratio", "dead", "healthy", "infected", "final_dead", "final_touched", "final_infected", "final_untouched"
+    )
 
     def __init__(self, cell_ratio: int = 5) -> None:
         self.cell_ratio = cell_ratio
@@ -289,6 +300,11 @@ class BoardConfig:
         self.dead = 0.5  # (0, 0, 0)
         self.healthy = 0.0  # (0, 0, 1)
         self.infected = 1.0  # (1, 0, 0)
+
+        self.final_dead = (0., 0., 0.)  # k
+        self.final_infected = (1., 0., 0.)  # "r"
+        self.final_touched = (0., 0., 1.)  # "b"
+        self.final_untouched = (0., 1., 0.)  # "g"
 
     def get_color(self, person: Person) -> float:
         """
@@ -301,6 +317,15 @@ class BoardConfig:
         if person.infection_status == InfectionStatus.CURRENTLY_INFECTED:
             return self.infected
         return self.healthy
+
+    def get_final_color(self, person: Person) -> Tuple[float, float, float]:
+        if not person.touched:
+            return self.final_untouched
+        if person.infection_status == InfectionStatus.NOT_INFECTED:
+            return self.final_touched
+        if person.infection_status == InfectionStatus.DEAD:
+            return self.final_dead
+        return self.final_infected
 
 
 class SimulationStepData(PrintableStructure):
