@@ -1,23 +1,14 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import time
 
-from matplotlib import cm
-from matplotlib.mlab import bivariate_normal
-from numpy import meshgrid, linspace
-from numpy.ma import arange
-import numpy as np
 import os
-
 import pickle
-
-from Simulation import Simulation, draw_analysis
-from models.Board import Board, BoardConfig
-from models.Disease import Measles
 
 import matplotlib
 
-from models.Person import InfectionStatus
+from Simulation import Simulation, draw_analysis
+from models.Board import BoardConfig
+from models.Disease import Measles
 
 matplotlib.use('TkAgg')  # do this before importing pylab
 import time

@@ -1,11 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from enum import Enum, unique
+
 from typing import List, Any, TypeVar, Type
 
 from models.Country import Country
 from models.PrintableStructure import PrintableStructure
-from models.random import select, random_weighted_select
+from models.random import random_weighted_select
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.fili@gmail.com"
@@ -144,7 +145,7 @@ class Person(PrintableStructure):
                  disease_status: DiseaseStatus = DiseaseStatus.INCUBATION_PERIOD,
                  infectivity_status: InfectivityStatus = InfectivityStatus.NOT_INFECTIVE,
                  vaccination_status: VaccinationStatus = VaccinationStatus.NOT_VACCINATED,
-                 touched: bool=False) \
+                 touched: bool = False) \
             -> None:
         self.age_group = age_group
         self.sex_type = sex_type
