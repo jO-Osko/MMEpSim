@@ -4,6 +4,7 @@ from enum import Enum, unique
 from typing import List, Any, TypeVar, Type
 
 from models.Country import Country
+from models.PrintableStructure import PrintableStructure
 from models.random import select, random_weighted_select
 
 __author__ = "Filip Koprivec"
@@ -123,7 +124,7 @@ class InfectivityStatus(ListableEnum):
     INFECTIVE = 1
 
 
-class Person:
+class Person(PrintableStructure):
     """
     Objekt ’Person’ (oseba), ki vsebuje vse potrebne informacije o osebi
     """
@@ -132,6 +133,10 @@ class Person:
         "age_group", "sex_type", "infection_status", "infection_duration", "disease_status", "infectivity_status",
         "vaccination_status", "touched"
     )
+
+    __printable_fields__ = __slots__
+
+    __printable_name__ = "Person"
 
     def __init__(self, age_group: AgeGroup = AgeGroup.ADULT, sex_type: SexType = SexType.WOMAN,
                  infection_status: InfectionStatus = InfectionStatus.NOT_INFECTED,
@@ -166,7 +171,7 @@ class Person:
 
     def __copy__(self) -> "Person":
         return Person(self.age_group, self.sex_type, self.infection_status, self.infection_duration,
-                      self.disease_status, self.infectivity_status, self.vaccination_status)
+                      self.disease_status, self.infectivity_status, self.vaccination_status, self.touched)
 
 
 def main() -> bool:

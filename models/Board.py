@@ -8,42 +8,15 @@ from math import ceil
 
 import numpy
 from random import random
-from typing import Tuple, List, Any, Optional
+from typing import Tuple, List, Any, Optional, Iterable
 
 from models.Country import Country
 from models.Disease import Disease
-from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseStatus, VaccinationStatus
+from models.Person import Person, InfectionStatus, InfectivityStatus, DiseaseStatus
+from models.PrintableStructure import PrintableStructure
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.filip+template@gmail.com"
-
-"""Simple PrintableStructure interface"""
-from typing import Iterable
-
-
-class PrintableStructure:
-    # Object methods
-    __printable_fields__ = ()  # type: Iterable[str]
-    __printable_name__ = "PrintableStructure"
-    _formatter = "{name}({data})"
-
-    __slots__ = ()  # type: Iterable[str]
-
-    def _str_fields(self) -> str:
-        return ", ".join(map(lambda x: repr(self.__getattribute__(x)), self.__printable_fields__))
-
-    def _str_pairs(self) -> str:
-        return ", ".join(map(lambda x: x + "=" + repr(self.__getattribute__(x)), self.__printable_fields__))
-
-    def pp(self) -> str:
-        return self._formatter.format(name=self.__printable_name__, data=self._str_pairs())
-
-    def __repr__(self) -> str:
-        return self._formatter.format(name=self.__printable_name__, data=self._str_fields())
-
-    # For convenience
-    def __str__(self) -> str:
-        return self.__repr__()
 
 
 class Board:
@@ -84,6 +57,7 @@ class Board:
     def manually_infect(self, coordinates: Iterable[Tuple[int, int]]) -> None:
         for i, j in coordinates:
             person = self.board[i][j]
+            person.touched = True
             if person.infection_status != InfectionStatus.CURRENTLY_INFECTED:
                 person.infection_status = InfectionStatus.CURRENTLY_INFECTED
                 self.infected_num += 1
@@ -188,6 +162,7 @@ class Board:
                 # Die
                 if person.disease_status is DiseaseStatus.SYMPTOMATIC_PERIOD and random() < mortality_chance:
                     person.infection_status = InfectionStatus.DEAD
+                    newly_symptomatic_num -= 1
                     newly_dead_num += 1
                     newly_infected_num -= 1
                     if person.infectivity_status is InfectivityStatus.INFECTIVE:
