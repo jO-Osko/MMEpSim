@@ -54,7 +54,7 @@ class Simulation:
                 if self.board.step_num % 20 == 0:
                     print(results[-1].pp())
         if save_file is not None:
-            pickle.dump(results, save_file)
+            pickle.dump((results, self), save_file)
         return results
 
 
