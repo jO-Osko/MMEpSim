@@ -171,6 +171,10 @@ class Person(PrintableStructure):
         return cls(age_group, sex_type, vaccination_status=vaccination_status)
 
     def __copy__(self) -> "Person":
+        """
+        Naredi kopijo posameznika
+        :return: Kopiran posameznik
+        """
         return Person(self.age_group, self.sex_type, self.infection_status, self.infection_duration,
                       self.disease_status, self.infectivity_status, self.vaccination_status, self.touched)
 

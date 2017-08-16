@@ -21,7 +21,7 @@ __email__ = "koprivec.filip+template@gmail.com"
 
 class Board:
     """
-    
+    Objekt, ki predstavlja celotno mrežo na kateri poteka simulacija
     """
     __slots__ = (
         "country", "disease", "width", "height", "board", "board_config", "infected_num", "dead_num", "alive_num",
@@ -45,6 +45,10 @@ class Board:
 
     @property
     def stopped(self) -> bool:
+        """
+        Preveri, ali se je simulacija ustavila
+        :return: Ali se je ismulacija ustavila
+        """
         return self.infected_num == 0
 
     def init_board(self) -> None:
@@ -55,6 +59,11 @@ class Board:
         self.board = [[Person.from_country_data(self.country) for _ in range(self.width)] for _ in range(self.height)]
 
     def manually_infect(self, coordinates: Iterable[Tuple[int, int]]) -> None:
+        """
+        Ročno okužimo nekaj posameznikov, da lahko pričnemo s simulacijo
+        :param coordinates: Koordinate posameznikov
+        :return: None
+        """
         for i, j in coordinates:
             person = self.board[i][j]
             person.touched = True
@@ -107,8 +116,7 @@ class Board:
     def next_step(self) -> "SimulationStepData":
         """
         Simulira en korak/dan v modelu, vrne spremembe ki so se zgodile, negativne vrednosti predstavljajo manj ljudi
-        :return: (število na novo okuženih; število na novo kužnih; število novih ljudi, ki kažejo simptome; 
-                število na novo umrlih)
+        :return: Objket ki predstavlja korak v simulaciji
         """
 
         self.step_num += 1
@@ -265,6 +273,9 @@ class Board:
 
 
 class BoardConfig:
+    """
+    Objket, ki združuje posamezne nastavitve simulacijske plošče
+    """
     __slots__ = (
         "cell_ratio", "dead", "healthy", "infected", "final_dead", "final_touched", "final_infected", "final_untouched"
     )
@@ -294,6 +305,11 @@ class BoardConfig:
         return self.healthy
 
     def get_final_color(self, person: Person) -> Tuple[float, float, float]:
+        """
+        Vrne natančjenšo barvo posameznika
+        :param person: trenutno gledan posameznik
+        :return: vrednost barve
+        """
         if not person.touched:
             return self.final_untouched
         if person.infection_status == InfectionStatus.NOT_INFECTED:
@@ -304,6 +320,9 @@ class BoardConfig:
 
 
 class SimulationStepData(PrintableStructure):
+    """
+    Objekt ki predstavlja posamezen korak v simulaciji
+    """
     __slots__ = (
         "step_num", "infected", "newly_infected", "infectious", "newly_infectious", "symptomatic", "newly_symptomatic",
         "dead", "newly_dead", "touched", "newly_touched"
@@ -331,6 +350,10 @@ class SimulationStepData(PrintableStructure):
 
     @property
     def empty(self) -> bool:
+        """
+        Preveri ali je simulacijski korak 'prazen'
+        :return: 
+        """
         return self.step_num == -1
 
     @classmethod

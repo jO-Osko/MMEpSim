@@ -10,6 +10,10 @@ __email__ = "koprivec.filip+template@gmail.com"
 
 from typing import Iterable
 
+"""
+Moj standardno uporabljan objekt za razhroščevanje in lepši izpis uporabniško definiranih objektov
+"""
+
 
 class PrintableStructure:
     # Object methods

@@ -19,6 +19,9 @@ __email__ = "koprivec.filip+template@gmail.com"
 
 
 class Simulation:
+    """
+    Krovni objekt simulacije
+    """
     def __init__(self, country: Country, disease: Disease, board_config: BoardConfig,
                  initial_infections: Optional[Iterable[Tuple[int, int]]] = None, seed: Optional[int] = None) -> None:
         if seed:
@@ -34,6 +37,13 @@ class Simulation:
         self.board.manually_infect(initial_infections or [(self.board.height // 2, self.board.width // 2)])
 
     def simulate_steps(self, steps: int = 10, verbose= True, save_file: Optional[IO[bytes]] = None) -> List[SimulationStepData]:
+        """
+        Simulira več korakov simulacije (ali do konca), po želji te korake izpisuje in shranjuje v datoteko
+        :param steps: število korakov
+        :param verbose: natančnost izpisovanja
+        :param save_file: datoteka za shranjevanje
+        :return: Rezultati korakov simulacije
+        """
         results = []  # type: List[SimulationStepData]
         while not self.board.stopped and steps > 0:
             steps -= 1
@@ -45,6 +55,12 @@ class Simulation:
         return results
 
     def simulate(self, verbose: bool = True, save_file: Optional[IO[bytes]] = None) -> List[SimulationStepData]:
+        """
+        Odsimulira celotno simulacijo in jo po potrebi shrani
+        :param verbose: Pogostost izpisa
+        :param save_file: datoteka za sranjevanje
+        :return: REzultati korakov simulacije
+        """
         results = []  # type: List[SimulationStepData]
         while not self.board.stopped:
             results.append(self.board.next_step())
@@ -59,8 +75,15 @@ class Simulation:
 
 
 # Analysis part
-def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation):
+def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -> None:
+    """
+    Iziriše grafe za analizo
+    :param sim_steps: koraki simulacije
+    :param simulation: objekt simulacije
+    :return: None
+    """
     def attribute_getter(attr_name: str) -> List[int]:
+        """Pridobi posamezne atribute iz podatkov simulacije"""
         return list(map(lambda x: getattr(x, attr_name), sim_steps))
 
     t = arange(sim_steps[-1].step_num)

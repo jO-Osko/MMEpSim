@@ -25,12 +25,19 @@ from models.Country import Slovenia
 
 
 def main() -> bool:
+    """
+    Gonilna funkcija
+    :return: 
+    """
     # Initialize data
 
     country = Slovenia
     disease = Measles
     board_config = BoardConfig(cell_ratio=10)
     seed = 10
+
+    show_progress = False
+    simulation_steps = 10
 
     experiment_name = "Slovenia-Measels-10-10.pickle"
     folder = "experiments"
@@ -40,9 +47,6 @@ def main() -> bool:
         pass
     file_name = os.path.join(folder, experiment_name)
 
-    show_progress = False
-    simulation_steps = 10
-
     simulation = Simulation(country, disease, board_config, seed=seed)
 
     loaded = False
@@ -50,14 +54,22 @@ def main() -> bool:
     if show_progress:
         simulation_data = []
 
-        def show_progressed():
+        def show_progressed() -> None:
+            """
+            Pomožna funkcije za sprotno prikazovanje mreže
+            :return: None
+            """
             fig = plt.figure()
 
             tmp = plt.imshow(simulation.board.to_final_np_image_array(), interpolation='nearest')
             del tmp
             fig.canvas.draw()
 
-            def animate():
+            def animate() -> None:
+                """
+                Pomožna funkcija za animacijo mreže
+                :return: None
+                """
                 data = simulation.simulate_steps(simulation_steps, False)
                 simulation_data.extend(data)
                 print(data[-1].pp())
