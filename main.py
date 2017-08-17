@@ -4,13 +4,16 @@
 import os
 import pickle
 
+
+# do this before importing pylab
+from matplotlib import use
+use("TkAgg")
 import matplotlib
 
 from Simulation import Simulation, draw_analysis
 from models.Board import BoardConfig
 from models.Disease import Measles
 
-matplotlib.use('TkAgg')  # do this before importing pylab
 import time
 import matplotlib.pyplot as plt
 
@@ -36,7 +39,7 @@ def main() -> bool:
     board_config = BoardConfig(cell_ratio=10)
     seed = 10
 
-    show_progress = False
+    show_progress = True
     simulation_steps = 10
 
     experiment_name = "Slovenia-Measels-10-10.pickle"
