@@ -138,7 +138,7 @@ def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -
         ["Število prebolelih", inf_all - simulation.board.dead_num],
         ["Število prizadetih", simulation.board.touched_num],
         ["Delež prizadete \n populacije",
-         "{0:.3f}%".format(float(simulation.board.touched_num) / (simulation.board.height * simulation.board.width))]
+         "{0:.3f}%".format(float(simulation.board.touched_num * 100) / (simulation.board.height * simulation.board.width))]
     ]
 
     table = report.table(cellText=data, colLabels=columns, loc='center')
