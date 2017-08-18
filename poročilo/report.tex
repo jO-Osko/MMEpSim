@@ -111,11 +111,15 @@ Poleg fizičnih lastnosti pa posamezniku glede na stanje obolelosti pripada še 
 \item Kužen: Posameznik lahko okuži ljudi okoli sebe.
 \end{enumerate}
 
-\item \textbf{Trajanje bolezni}: Kako dolgo je posameznik okužen. S pomočjo tega parametra določamo kdaj posameznik postane kuže začne kazati simptome, ozdravi, itd.
+\item \textbf{Trajanje bolezni}: Kako dolgo je posameznik okužen. S pomočjo tega parametra določamo kdaj posameznik postane kužen začne kazati simptome, ozdravi, itd. Ob vsakem koraku iteracije modela se ta parameter poveča za $1$ in se ustrezno posodobijo njegova stanja.
 
 \item \textbf{Dotaknjen}: Parameter je uporabljen za spremljanje poti epidemije. Vsakič ko posameznik pride v stik z okuženim (bi se potencialno lahko okužil) posameznik postane dotaknjen. S tem lahko spremljamo razširjenost epidemije in njeno napredovanje, ter možne varne točke.
 
 \end{enumerate}
+
+Celotna simulacija epidemije poteka na kvadratni 2d mreži, ki jo zaradi smiselnosti 'ovijemo' z vseh strani. Formalno: identificiramo nasprotni si stranici na mreži in dobimo nekakšno sfero. Še bolj formalno: uvedemo ekvivalčno relacijo med točkami na mreži s predpisom: 
+$$(x,y) \cong (x',y') \iff x-x' = w*k \land y-y' = h*l; k,l \in \mathbb{N}$$
+kjer je $w$ širina mreže in $h$ višina mreže. S tem dosežemo, da je stanje na mreži odvisno zgolj od relativne postavitve posameznikov in lahko za najlepši pregled nad širjenjem epidemije začetnega okuženega postavimo kar na sredino mreže.
 
 \section*{Optimum Solution}
 \lipsum[4]
