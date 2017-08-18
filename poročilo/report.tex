@@ -117,6 +117,17 @@ Poleg fizičnih lastnosti pa posamezniku glede na stanje obolelosti pripada še 
 
 \end{enumerate}
 
+Za primerno spremljanje infekcije poleg podatkov o posamezniku potrebujemo tudi osnovne parametre bolezni, te so:
+\begin{enumerate}
+\item \textbf{Dolžina inkubacijske dobe}
+\item \textbf{Čas trajanja simptomatske bolezni}
+\item \textbf{Dolžina latentnega obdobja}
+\item \textbf{Čas trajanja infektivnosti posameznika}
+\item \textbf{Smrtnost bolezni}: Delež okužeih, ki v času okužbe umre. Za potrebe simulacije predpostavimo, da je bolezen smrtna zgolj v simptomatski fazi. Nadalje predpostavimo, da je smrtnost vsak dan enako verjetna in neodvisna. Iz tega izračunamo \textbf{verjetnost smrti} (mortality\textunderscore rate), ki ga uporabimo pri koraku simulacije.
+\item \textbf{Infektivnost bolezni}: Ta parameter je najtežje ugotoviti iz biološko/medicinskega opisa bolezni. Za njegov pomen sem vzel verjetnost, da se po preteku infektivnega obdobja posameznik v kontaku za kužnim okoži. Iz tega podobno kot pri smrtnosti ob predpostavki o enakomernosti in neodvisnosti izpeljemo \textbf{verjetnost infekcije}.
+
+\end{enumerate}
+
 Celotna simulacija epidemije poteka na kvadratni 2d mreži, ki jo zaradi smiselnosti 'ovijemo' z vseh strani. Formalno: identificiramo nasprotni si stranici na mreži in dobimo nekakšno sfero. Še bolj formalno: uvedemo ekvivalčno relacijo med točkami na mreži s predpisom: 
 $$(x,y) \cong (x',y') \iff x-x' = w*k \land y-y' = h*l; k,l \in \mathbb{N}$$
 kjer je $w$ širina mreže in $h$ višina mreže. S tem dosežemo, da je stanje na mreži odvisno zgolj od relativne postavitve posameznikov in lahko za najlepši pregled nad širjenjem epidemije začetnega okuženega postavimo kar na sredino mreže.
