@@ -35,7 +35,7 @@ def main() -> bool:
 
     # Primer simulacije
 
-    precepljenost = 0.95
+    precepljenost = 0.92
 
     country = Country.create_Slovenia(precepljenost)
     disease = Measles
@@ -46,7 +46,7 @@ def main() -> bool:
     # Ne uporabi shranjenih simulacije
     use_old = False
     # Nastavimo prikazovanje stanja (nekoliko počasnejša simulacija, a sproti prikazuje stanje na mreži)
-    show_progress = False
+    show_progress = True
     # Števio korako za osveževanje stanja na prikazu
     simulation_steps = 10
 
