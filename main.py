@@ -4,11 +4,10 @@
 import os
 import pickle
 
-
 # do this before importing pylab
 from matplotlib import use
+
 use("TkAgg")
-import matplotlib
 
 from Simulation import Simulation, draw_analysis
 from models.Board import BoardConfig
@@ -24,22 +23,31 @@ __email__ = "koprivec.fili@gmail.com"
 Glavni program
 """
 
-from models.Country import Slovenia
+from models.Country import Country
 
 
 def main() -> bool:
     """
     Gonilna funkcija
-    :return: 
+    :return: True
     """
     # Initialize data
 
-    country = Slovenia
+    # Primer simulacije
+
+    precepljenost = 0.95
+
+    country = Country.create_Slovenia(precepljenost)
     disease = Measles
     board_config = BoardConfig(cell_ratio=10)
-    seed = 10
+    # Nastavimo seme
+    seed = 2017
 
-    show_progress = True
+    # Ne uporabi shranjenih simulacije
+    use_old = False
+    # Nastavimo prikazovanje stanja (nekoliko počasnejša simulacija, a sproti prikazuje stanje na mreži)
+    show_progress = False
+    # Števio korako za osveževanje stanja na prikazu
     simulation_steps = 10
 
     experiment_name = "Slovenia-Measels-10-10.pickle"
@@ -92,6 +100,8 @@ def main() -> bool:
         show_progressed()
     else:
         try:
+            if not use_old:
+                raise ZeroDivisionError()
             simulation_data, simulation = pickle.load(open(file_name, "rb"))
             loaded = True
         except:
