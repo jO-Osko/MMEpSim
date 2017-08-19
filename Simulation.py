@@ -13,6 +13,7 @@ from typing import Tuple, Iterable, List, Optional, IO
 from models.Board import BoardConfig, Board, SimulationStepData
 from models.Country import Country
 from models.Disease import Disease
+from models.Person import InfectionStatus
 
 __author__ = "Filip Koprivec"
 __email__ = "koprivec.filip+template@gmail.com"
@@ -127,7 +128,14 @@ def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -
 
     columns = ("Atribut", "Vrednost")
 
-    inf_all = sum(infected)
+    inf_all = 0
+
+    for j in simulation.board.board:
+        for person in j:
+            if person.infection_status != InfectionStatus.NOT_INFECTED:
+                inf_all += 1
+
+    #inf_all = sum(attribute_getter("newly_infected"))
 
     data = [
         ["Random seed", simulation.seed],
@@ -138,7 +146,7 @@ def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -
         ["Število prebolelih", inf_all - simulation.board.dead_num],
         ["Število prizadetih", simulation.board.touched_num],
         ["Delež prizadete \n populacije",
-         "{0:.3f}%".format(float(simulation.board.touched_num * 100) / (simulation.board.height * simulation.board.width))]
+         "{0:.3f}%".format(float(simulation.board.touched_num) / (simulation.board.height * simulation.board.width))]
     ]
 
     table = report.table(cellText=data, colLabels=columns, loc='center')
