@@ -27,7 +27,7 @@ class Country:
         self.vaccine_distribution = vaccine_distribution
 
     @classmethod
-    def create_Slovenia(cls, vaccianted):
+    def create_Slovenia(cls, vaccianted: float) -> "Country":
         return cls(1_978_029, [0.51, 0.49], [0.1335, 0.677, 0.1895],
                    [(1 - vaccianted), vaccianted * 0.90, vaccianted * 0.01, vaccianted * 0.04, vaccianted * 0.05])
 
