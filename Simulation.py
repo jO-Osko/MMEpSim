@@ -5,10 +5,11 @@
 Main graphics simulation class
 """
 import pickle
+
 import matplotlib.pyplot as plt
 from matplotlib import patches
 from numpy import arange
-from typing import Tuple, Iterable, List, Optional, IO
+from typing import Tuple, Iterable, List, Optional, IO, Union
 
 from models.Board import BoardConfig, Board, SimulationStepData
 from models.Country import Country
@@ -23,11 +24,15 @@ class Simulation:
     """
     Krovni objekt simulacije
     """
+
     def __init__(self, country: Country, disease: Disease, board_config: BoardConfig,
                  initial_infections: Optional[Iterable[Tuple[int, int]]] = None, seed: Optional[int] = None) -> None:
-        if seed:
-            import random
-            random.seed(seed)
+        if seed is None:
+            import time
+            seed = int(time.time())
+
+        import random
+        random.seed(seed)
 
         self.seed = seed
 
@@ -37,7 +42,8 @@ class Simulation:
 
         self.board.manually_infect(initial_infections or [(self.board.height // 2, self.board.width // 2)])
 
-    def simulate_steps(self, steps: int = 10, verbose= True, save_file: Optional[IO[bytes]] = None) -> List[SimulationStepData]:
+    def simulate_steps(self, steps: int = 10, verbose=True,
+                       save_file: Optional[IO[bytes]] = None) -> List[SimulationStepData]:
         """
         Simulira več korakov simulacije (ali do konca), po želji te korake izpisuje in shranjuje v datoteko
         :param steps: število korakov
@@ -76,13 +82,16 @@ class Simulation:
 
 
 # Analysis part
-def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -> None:
+def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation, show: bool = True) -> List[
+    Tuple[str, Union[int, str]]]:
     """
     Iziriše grafe za analizo
     :param sim_steps: koraki simulacije
     :param simulation: objekt simulacije
+    :param show: Ali pokaže graf
     :return: None
     """
+
     def attribute_getter(attr_name: str) -> List[int]:
         """Pridobi posamezne atribute iz podatkov simulacije"""
         return list(map(lambda x: getattr(x, attr_name), sim_steps))
@@ -135,18 +144,18 @@ def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -
             if person.infection_status != InfectionStatus.NOT_INFECTED:
                 inf_all += 1
 
-    #inf_all = sum(attribute_getter("newly_infected"))
+    # inf_all = sum(attribute_getter("newly_infected"))
 
     data = [
-        ["Random seed", simulation.seed],
-        ["Število celic", simulation.board.height * simulation.board.width],
-        ["Ljudi v celici", simulation.board.board_config.cell_ratio],
-        ["Skupaj okuženih", inf_all],
-        ["Število mrtvih", simulation.board.dead_num],
-        ["Število prebolelih", inf_all - simulation.board.dead_num],
-        ["Število prizadetih", simulation.board.touched_num],
-        ["Delež prizadete \n populacije",
-         "{0:.3f}%".format(float(simulation.board.touched_num) / (simulation.board.height * simulation.board.width))]
+        ("Random seed", simulation.seed),
+        ("Število celic", simulation.board.height * simulation.board.width),
+        ("Ljudi v celici", simulation.board.board_config.cell_ratio),
+        ("Skupaj okuženih", inf_all),
+        ("Število mrtvih", simulation.board.dead_num),
+        ("Število prebolelih", inf_all - simulation.board.dead_num),
+        ("Število prizadetih", simulation.board.touched_num),
+        ("Delež prizadete \n populacije",
+         "{0:.3f}%".format(float(simulation.board.touched_num) / (simulation.board.height * simulation.board.width)))
     ]
 
     table = report.table(cellText=data, colLabels=columns, loc='center')
@@ -168,8 +177,10 @@ def draw_analysis(sim_steps: List[SimulationStepData], simulation: Simulation) -
                 mng.resize(*mng.window.maxsize())
             except:
                 pass
+    if show:
+        plt.show()
 
-    plt.show()
+    return data
 
 
 def main() -> bool:
