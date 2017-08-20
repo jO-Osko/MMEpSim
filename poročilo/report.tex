@@ -40,7 +40,7 @@
 
 
 \section*{Navodila}
-S pomočjo metode Monte Carlo analizirajte širjenje nalezljive bolezni na $2d$ mreži. Preverite, kako različni populacijski in bolezenski parametri (precepljenost, nalezljivost, smrtnost) vplivajo na širjenje bolezni in končno stanje.
+S pomočjo metode Monte Carlo analizirajte širjenje nalezljive bolezni na $2d$ mreži. Preverite, kako različni populacijski parametri (precepljenost) vplivajo na širjenje bolezni in končno stanje.
 
 \section*{Uvod}
 Nalezljive bolezni so skozi zgodovino človeštva pomembno vplivale na celosten razvoj civilizacije in življenja posameznika. Skozi zgodovino je v kolektivnem spominu ostalo kar nekaj pomembnejših izbruhov nalezljivih bolezni (Črna smrt, ki je konec srednjega veka pomorila med 30 in 60\% evropskega prebivalstva, različne mrzlice, ki so ob prihodu Evropejcev ohromile prebilvastvo Amerik, do Španske gripe, ošpic in drugih.). Epidemije so s spreminjanjem populacijske dinamike pogosto močno spremenile tok zgodovine, bile pa so tudi pomemben razlog, ki je omejeval velikosti mest. Še celo v 19. stoletju sta bila tako London kot Pariz pogosto deležna izbruhov kolere, katerih vzrokov pa vse do razvoja teorije mikroorganizmov kot povzročiteljev bolezni ni bilo mogoče razložiti. V 20. stoletju pa je človeštvo z razvojem antibiotikov in cepiv mnoge izmed bolezni izkoreninili (črne koze, v Zahodnem svetu tudi očpice, rdečke in otroško paralizo).
@@ -63,7 +63,7 @@ Naslednji razvoj modela je tako imenovani SIS model, ki bolje upošteva tudi dej
 \subsection*{Naključni model}
 V svojem projektu sem si bolj podrobno ogledal simulacijski model. Predpostavimo fiksno število osebkov na 2d mreži, kjer vsakemu osebku priredimo svojo celico. Namesto na razdelkih populacije, simulacija deluje na nivoju posameznika, zato si lahko privoščimo nekoliko preurejen SEIR model, kjer posamezniku priredimo več značilnosti. Te značilnosti so podrobneje opisane tudi v kodi. Posamezniku priredimo več značilnosti, ki so pomembne za kužnost, prenosljivost in smrtnost bolezni:
 \begin{enumerate}
-\item \textbf{Startostna skupina}: Pomembna je zaradi učinkovitosti cepiv, smrtnosti pri različnih modelih, ter zaradi prenosljivosti. Ob bolj natančni simulaciji (za katero ni niti časa, niti procesorja, niti delovnega spomina), bi lahko s pomočjo starosti nadzorovali infektivnost posameznika zaradi različne razdalije potovanja (vožnja v sližbo), socialne skupine (otroci v šoli ali vrtcu so v stiku z velik drugimi otroci) in imajo v splošnem slabši imunski sistem, spolne aktivnosti, načina življenja, itd.
+\item \textbf{Starostna skupina}: Pomembna je zaradi učinkovitosti cepiv, smrtnosti pri različnih modelih, ter zaradi prenosljivosti. Ob bolj natančni simulaciji (za katero ni niti časa, niti procesorja, niti delovnega spomina), bi lahko s pomočjo starosti nadzorovali infektivnost posameznika zaradi različne razdalije potovanja (vožnja v sližbo), socialne skupine (otroci v šoli ali vrtcu so v stiku z velik drugimi otroci) in imajo v splošnem slabši imunski sistem, spolne aktivnosti, načina življenja, itd.
 \begin{enumerate}
 \item Otrok: do 14 let
 \item Odrasel: od 15 do 64 let
